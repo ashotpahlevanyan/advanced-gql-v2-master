@@ -8,9 +8,9 @@ const NEW_POST = 'NEW_POST'
  */
 module.exports = {
   Query: {
-    me(_, __, {user}){
+    me: authenticated((_, __, {user}) => {
       return user
-    },
+    }),
     posts(_, __, {user, models}) {
       return models.Post.findMany({author: user.id})
     },
@@ -50,7 +50,7 @@ module.exports = {
       const existing = models.User.findOne({email: input.email})
 
       if (existing) {
-        throw new Error('nope')  
+        throw new Error('nope')
       }
       const user = models.User.createOne({...input, verified: false, avatar: 'http'})
       const token = createToken(user)
@@ -60,7 +60,7 @@ module.exports = {
       const user = models.User.findOne(input)
 
       if (!user) {
-        throw new Error('nope')  
+        throw new Error('nope')
       }
 
       const token = createToken(user)
